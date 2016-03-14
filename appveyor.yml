@@ -50,6 +50,7 @@ init:
 install:
   - set PATH=%PATH%;%PYTHON%/Scripts/
   - ps: wget http://tukaani.org/xz/xz-5.2.1-windows.zip
+  - dir
   - ps: unzip -d $env:PYTHON xz-5.2.1-windows
   - ps: mv $env:PYTHON/bin_i686/*.dll $env:PYTHON
   - pip.exe install conan_package_tools backports.lzma # It install conan too
