@@ -1,3 +1,7 @@
+import sys
+
+print(sys.prefix)
+
 from contextlib import contextmanager
 from conans import ConanFile, CMake
 from conans.tools import download
