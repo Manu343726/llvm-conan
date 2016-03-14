@@ -10,6 +10,7 @@ environment:
     CONAN_USERNAME: "smspillaz"
     CONAN_CHANNEL: "ci"
     CONAN_TOTAL_PAGES: 30
+    CONAN_PIP_PACKAGE: "backports.lzma"
     CONAN_PASSWORD:
       secure: 5nLxRf+tMibvD7MIK0PDWQ==
     
