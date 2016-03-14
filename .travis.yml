@@ -84,6 +84,8 @@ matrix:
     language: generic
     env: CONAN_CURRENT_PAGE=4
 install:
+- sudo apt-get install liblzma-dev
+- pip install backports.lzma
 - "./.travis/install.sh"
 script:
 - "./.travis/run.sh"
