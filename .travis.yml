@@ -84,6 +84,7 @@ matrix:
     language: generic
     env: CONAN_CURRENT_PAGE=4
 install:
+- export PYTHONPATH="/usr/lib/python2.7/site-packages:${PYTHON}"
 - sudo apt-get install liblzma-dev
 - sudo pip install backports.lzma
 - "./.travis/install.sh"
