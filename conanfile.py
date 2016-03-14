@@ -1,6 +1,6 @@
 import sys
 
-print(sys.prefix)
+print(sys.path)
 
 from contextlib import contextmanager
 from conans import ConanFile, CMake
