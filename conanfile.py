@@ -50,7 +50,7 @@ class LLVMConan(ConanFile):
     requires = tuple()
     url = "http://github.com/smspillaz/llvm-conan"
     license = "BSD"
-    settings = "os", "compiler", "build_type", "arch"
+    settings = "os", "compiler", "build_type", "arch", "shared"
     options = {"shared": [True, False]}
     default_options = "shared=False"
 
