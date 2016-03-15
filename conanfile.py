@@ -4,10 +4,9 @@ print(sys.path)
 
 from contextlib import contextmanager
 from conans import ConanFile, CMake
-from conans.tools import download
+from conans.tools import download, unzip
 import shutil
 import os
-import backports.lzma as lzma
 
 VERSION = "3.8.0"
 
@@ -27,29 +26,17 @@ def in_dir(directory):
         os.chdir(last_dir)
 
 
-def unlzma(lzma_name):
-    import tarfile
-    tar_name = os.path.splitext(lzma_name)[0]
-    with lzma.open(lzma_name, "rb") as lzma_file:
-        with open(tar_name, "wb") as tar_file:
-            tar_file.write(lzma_file.read())
-
-        with tarfile.open(tar_file.name, "r") as tar_file:
-            tar_file.extractall(".")
-
-        os.unlink(tar_file.name)
-
-
 def extract_from_url(url):
     print("download {}".format(url))
     zip_name = os.path.basename(url)
     download(url, zip_name)
-    unlzma(zip_name)
+    unzip(zip_name)
     os.unlink(zip_name)
 
 
 def download_extract_llvm_component(component, release, extract_to):
-    extract_from_url("http://llvm.org/releases/{ver}/{comp}-{ver}.src.tar.xz"
+    extract_from_url("https://bintray.com/artifact/download/"
+                     "polysquare/LLVM/{comp}-{ver}.src.zip"
                      "".format(ver=release, comp=component))
     shutil.move("{comp}-{ver}.src".format(comp=component,
                                           ver=release),
@@ -75,7 +62,7 @@ class LLVMConan(ConanFile):
                                         "src/projects/libcxx")
         download_extract_llvm_component("libcxxabi", LLVMConan.version,
                                         "src/projects/libcxxabi")
-        download_extract_llvm_component("libunwind", LLVMConan.version,
+        download_extract_llvm_component("libunwind", "1.1",
                                         "src/projects/libunwind")
         download_extract_llvm_component("clang-tools-extra", LLVMConan.version,
                                         "src/tools/clang/tools/extra")
