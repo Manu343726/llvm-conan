@@ -50,7 +50,7 @@ class LLVMConan(ConanFile):
     requires = tuple()
     url = "http://github.com/smspillaz/llvm-conan"
     license = "BSD"
-    settings = "os", "compiler", "build_type", "arch", "shared"
+    settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = "shared=False"
 
@@ -91,7 +91,7 @@ class LLVMConan(ConanFile):
                                                 "src"),
                                cmd=cmake.command_line,
                                installdir=os.path.join(os.getcwd(), "install"),
-                               shared=("ON" if self.settings.shared
+                               shared=("ON" if self.options.shared
                                        else "OFF")))
             self.run("cmake --build . {cfg}".format(cfg=cmake.build_config))
             self.run("cmake --build . -- install")
