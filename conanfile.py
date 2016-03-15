@@ -49,8 +49,10 @@ class LLVMConan(ConanFile):
     generators = "cmake"
     requires = tuple()
     url = "http://github.com/smspillaz/llvm-conan"
-    license = "MIT"
+    license = "BSD"
     settings = "os", "compiler", "build_type", "arch"
+    options = {"shared": [True, False]}
+    default_options = "shared=False"
 
     def config(self):
         try:  # Try catch can be removed when conan 0.8 is released
@@ -82,13 +84,15 @@ class LLVMConan(ConanFile):
 
         with in_dir("build"):
             self.run("cmake '{src}' {cmd}"
-                     " -DBUILD_SHARED_LIBS=OFF"
+                     " -DBUILD_SHARED_LIBS={shared}"
                      " -DCMAKE_INSTALL_PREFIX={installdir}"
                      " -DCMAKE_VERBOSE_MAKEFILE=1"
                      "".format(src=os.path.join(self.conanfile_directory,
                                                 "src"),
                                cmd=cmake.command_line,
-                               installdir=os.path.join(os.getcwd(), "install")))
+                               installdir=os.path.join(os.getcwd(), "install"),
+                               shared=("ON" if self.settings.shared
+                                       else "OFF")))
             self.run("cmake --build . {cfg}".format(cfg=cmake.build_config))
             self.run("cmake --build . -- install")
 
