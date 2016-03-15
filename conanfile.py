@@ -83,7 +83,7 @@ class LLVMConan(ConanFile):
             pass
 
         with in_dir("build"):
-            self.run("cmake '{src}' {cmd}"
+            self.run("cmake {src} {cmd}"
                      " -DBUILD_SHARED_LIBS={shared}"
                      " -DCMAKE_INSTALL_PREFIX={installdir}"
                      " -DCMAKE_VERBOSE_MAKEFILE=1"
