@@ -50,7 +50,13 @@ class LLVMConan(ConanFile):
     requires = tuple()
     url = "http://github.com/smspillaz/llvm-conan"
     license = "MIT"
-    settings = "os", "compiler", "build_type", "arch"
+    settings = "os", "compiler", "build_type", "arch", "libcxx"
+
+    def config(self):
+        try:  # Try catch can be removed when conan 0.8 is released
+            del self.settings.compiler.libcxx
+        except:
+            pass
 
     def source(self):
         download_extract_llvm_component("llvm", LLVMConan.version, "src")
