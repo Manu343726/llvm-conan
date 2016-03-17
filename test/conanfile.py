@@ -29,5 +29,4 @@ class DefaultNameConan(ConanFile):
         self.copy(pattern="clang", dst="bin", src="bin")
         
     def test(self):
-        self.run("cd bin && {path}".format(path=os.path.join(os.getcwd(),
-                                                             "example")))
+        pass
