@@ -1,7 +1,3 @@
-import sys
-
-print(sys.path)
-
 from contextlib import contextmanager
 from conans import ConanFile, CMake
 from conans.tools import download, unzip
