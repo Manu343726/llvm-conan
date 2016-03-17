@@ -89,7 +89,10 @@ class LLVMConan(ConanFile):
                                installdir=os.path.join(os.getcwd(), "install"),
                                shared=("ON" if self.options.shared
                                        else "OFF")))
-            self.run("cmake --build . {cfg}".format(cfg=cmake.build_config))
+            self.run("cmake --build . -- {cfg} {j}"
+                     "".format(cfg=cmake.build_config,
+                               j=("-j4" if platform.system() != "Windows"
+                                  else "")))
             self.run("cmake --build . -- install")
 
     def package(self):
