@@ -108,7 +108,7 @@ class LLVMConan(ConanFile):
                   dst="lib",
                   src="build/install/lib",
                   keep_path=True)
-        self.copy(pattern="*.so",
+        self.copy(pattern="*.so*",
                   dst="lib",
                   src="build/install/lib",
                   keep_path=True)
