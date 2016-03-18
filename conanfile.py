@@ -63,18 +63,6 @@ class LLVMConan(ConanFile):
 
     def source(self):
         download_extract_llvm_component("llvm", LLVMConan.version, "src")
-        download_extract_llvm_component("cfe", LLVMConan.version,
-                                        "src/tools/clang")
-        download_extract_llvm_component("compiler-rt", LLVMConan.version,
-                                        "src/projects/compiler-rt")
-        download_extract_llvm_component("libcxx", LLVMConan.version,
-                                        "src/projects/libcxx")
-        download_extract_llvm_component("libcxxabi", LLVMConan.version,
-                                        "src/projects/libcxxabi")
-        download_extract_llvm_component("libunwind", "1.1",
-                                        "src/projects/libunwind")
-        download_extract_llvm_component("clang-tools-extra", LLVMConan.version,
-                                        "src/tools/clang/tools/extra")
 
     def build(self):
         cmake = CMake(self.settings)
@@ -83,7 +71,11 @@ class LLVMConan(ConanFile):
         except OSError:
             pass
 
-        shutil.rmtree(BUILD_DIR)
+        try:
+            shutil.rmtree(BUILD_DIR)
+        except OSError:
+            pass
+
         with in_dir(BUILD_DIR):
             self.run("cmake \"%s\" %s"
                      " -DCLANG_INCLUDE_DOCS=OFF"
