@@ -3,6 +3,7 @@ from conans import ConanFile, CMake
 from conans.tools import download, unzip
 import shutil
 import os
+import platform
 
 VERSION = "3.8.0"
 
@@ -39,6 +40,10 @@ def download_extract_llvm_component(component, release, extract_to):
                 extract_to)
 
 
+BUILD_DIR = ("C:/__build" if platform.system == "Windows"
+             else "build")
+INSTALL_DIR = "install"  # This needs to be a relative path
+
 class LLVMConan(ConanFile):
     name = "llvm"
     version = os.environ.get("CONAN_VERSION_OVERRIDE", VERSION)
@@ -74,22 +79,31 @@ class LLVMConan(ConanFile):
     def build(self):
         cmake = CMake(self.settings)
         try:
-            os.makedirs("install")
+            os.makedirs(INSTALL_DIR)
         except OSError:
             pass
 
-        with in_dir("build"):
-            self.run("cmake {src} {cmd}"
-                     " -DBUILD_SHARED_LIBS={shared}"
-                     " -DCMAKE_INSTALL_PREFIX={installdir}"
+        shutil.rmtree(BUILD_DIR)
+        with in_dir(BUILD_DIR):
+            self.run("cmake \"%s\" %s"
+                     " -DCLANG_INCLUDE_DOCS=OFF"
+                     " -DCLANG_INCLUDE_TESTS=OFF"
+                     " -DCLANG_TOOLS_INCLUDE_EXTRA_DOCS=OFF"
+                     " -DCOMPILER_RT_INCLUDE_TESTS=OFF"
+                     " -DLIBCXX_INCLUDE_TESTS=OFF"
+                     " -DLIBCXX_INCLUDE_DOCS=OFF"
+                     " -DLLVM_INCLUDE_TESTS=OFF"
+                     " -DLLVM_INCLUDE_EXAMPLES=OFF"
+                     " -DLLVM_INCLUDE_GO_TESTS=OFF"
+                     " -DLLVM_BUILD_TESTS=OFF"
                      " -DCMAKE_VERBOSE_MAKEFILE=1"
-                     "".format(src=os.path.join(self.conanfile_directory,
-                                                "src"),
-                               cmd=cmake.command_line,
-                               installdir=os.path.join(os.getcwd(), "install"),
-                               shared=("ON" if self.options.shared
-                                       else "OFF")))
-            self.run("cmake --build . -- {cfg} {j}"
+                     " -DCMAKE_INSTALL_PREFIX=\"%s\""
+                     " -DBUILD_SHARED_LIBS=%s"
+                     "" % (os.path.join(self.conanfile_directory, "src"),
+                           cmake.command_line,
+                           INSTALL_DIR,
+                           ("ON" if self.options.shared else "OFF")))
+            self.run("cmake --build . {cfg} -- {j}"
                      "".format(cfg=cmake.build_config,
                                j=("-j4" if platform.system() != "Windows"
                                   else "")))
@@ -98,45 +112,22 @@ class LLVMConan(ConanFile):
     def package(self):
         self.copy(pattern="*",
                   dst="include",
-                  src="build/install/include",
+                  src=os.path.join(INSTALL_DIR, "include")
                   keep_path=True)
-        self.copy(pattern="*.a",
-                  dst="lib",
-                  src="build/install/lib",
-                  keep_path=True)
-        self.copy(pattern="*.h",
-                  dst="lib",
-                  src="build/install/lib",
-                  keep_path=True)
-        self.copy(pattern="*.so*",
-                  dst="lib",
-                  src="build/install/lib",
-                  keep_path=True)
-        self.copy(pattern="*.dylib",
-                  dst="lib",
-                  src="build/install/lib",
-                  keep_path=True)
-        self.copy(pattern="*.lib",
-                  dst="lib",
-                  src="build/install/lib",
-                  keep_path=True)
-        self.copy(pattern="*.cmake",
-                  dst="lib",
-                  src="build/install/lib",
-                  keep_path=True)
-        self.copy(pattern="*.dll",
-                  dst="lib",
-                  src="build/install/lib",
-                  keep_path=True)
+        for pattern in ["*.a", "*.h", "*.so", "*.lib", "*.dylib", "*.dll", "*.cmake"]:
+            self.copy(pattern=pattern,
+                      dst="lib",
+                      src=os.path.join(INSTALL_DIR, "lib"),
+                      keep_path=True)
         self.copy(pattern="*",
                   dst="share",
-                  src="build/install/share",
+                  src=os.path.join(INSTALL_DIR, "share"),
                   keep_path=True)
         self.copy(pattern="*",
                   dst="bin",
-                  src="build/install/bin",
+                  src=os.path.join(INSTALL_DIR, "bin"),
                   keep_path=True)
         self.copy(pattern="*",
                   dst="libexec",
-                  src="build/install/libexec",
+                  src=os.path.join(INSTALL_DIR, "libexec"),
                   keep_path=True)
