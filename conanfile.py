@@ -85,6 +85,8 @@ class LLVMConan(ConanFile):
                      " -DLIBCXX_INCLUDE_TESTS=OFF"
                      " -DLIBCXX_INCLUDE_DOCS=OFF"
                      " -DLLVM_INCLUDE_TESTS=OFF"
+                     " -DLLVM_INCLUDE_TOOLS=OFF"
+                     " -DLLVM_BUILD_TOOLS=OFF"
                      " -DLLVM_INCLUDE_EXAMPLES=OFF"
                      " -DLLVM_INCLUDE_GO_TESTS=OFF"
                      " -DLLVM_BUILD_TESTS=OFF"
