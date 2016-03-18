@@ -97,6 +97,7 @@ class LLVMConan(ConanFile):
                      " -DLLVM_INCLUDE_GO_TESTS=OFF"
                      " -DLLVM_BUILD_TESTS=OFF"
                      " -DCMAKE_VERBOSE_MAKEFILE=1"
+                     " -DLLVM_TARGETS_TO_BUILD=X86"
                      " -DCMAKE_INSTALL_PREFIX=\"%s\""
                      " -DBUILD_SHARED_LIBS=%s"
                      "" % (os.path.join(self.conanfile_directory, "src"),
