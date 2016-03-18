@@ -92,9 +92,11 @@ class LLVMConan(ConanFile):
                      " -DLLVM_TARGETS_TO_BUILD=X86"
                      " -DCMAKE_INSTALL_PREFIX=\"%s\""
                      " -DBUILD_SHARED_LIBS=%s"
-                     "" % (os.path.join(self.conanfile_directory, "src"),
+                     "" % (os.path.join(self.conanfile_directory,
+                                        "src"),
                            cmake.command_line,
-                           INSTALL_DIR,
+                           os.path.join(self.conanfile_directory,
+                                        INSTALL_DIR),
                            ("ON" if self.options.shared else "OFF")))
             self.run("cmake --build . {cfg} -- {j}"
                      "".format(cfg=cmake.build_config,
