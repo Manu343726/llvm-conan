@@ -5,7 +5,7 @@ if __name__ == "__main__":
     builder = ConanMultiPackager(visual_runtimes=["MT", "MD"])
 
     if platform.system() == "Windows":
-        builder.add_common_builds(visual_versions=[12])
+        builder.add_common_builds(visual_versions=[12, 13])
 
     if platform.system() == "Linux":
         for ver in ["4.8", "4.9" "5.2", "5.3"]:
@@ -13,8 +13,7 @@ if __name__ == "__main__":
                 builder.add({"arch": arch,
                              "build_type": "Release",
                              "compiler": "gcc",
-                             "compiler.version": ver},
-                             {})
+                             "compiler.version": ver}, {})
 
     if platform.system() == "Darwin":
         for compiler_version in ["5.0", "5.1", "6.0", "6.1", "7.0"]:
