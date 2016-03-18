@@ -112,7 +112,7 @@ class LLVMConan(ConanFile):
     def package(self):
         self.copy(pattern="*",
                   dst="include",
-                  src=os.path.join(INSTALL_DIR, "include")
+                  src=os.path.join(INSTALL_DIR, "include"),
                   keep_path=True)
         for pattern in ["*.a", "*.h", "*.so", "*.lib", "*.dylib", "*.dll", "*.cmake"]:
             self.copy(pattern=pattern,

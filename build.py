@@ -15,4 +15,13 @@ if __name__ == "__main__":
                              "compiler": "gcc",
                              "compiler.version": ver},
                              {})
+
+    if platform.system() == "Darwin":
+        for compiler_version in ["5.0", "5.1", "6.0", "6.1", "7.0"]:
+            for arch in ["x86", "x86_64"]:
+                for build_type in ["Release"]:
+                    builder.add({"arch": arch,
+                                 "build_type": build_type,
+                                 "compiler": "apple-clang",
+                                 "compiler.version": compiler_version}, {})
     builder.run()
