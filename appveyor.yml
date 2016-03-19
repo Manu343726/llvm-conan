@@ -9,16 +9,13 @@ environment:
     CONAN_REFERENCE: "llvm/3.8.0"
     CONAN_USERNAME: "smspillaz"
     CONAN_CHANNEL: "ci"
-    CONAN_TOTAL_PAGES: 30
-    CONAN_PIP_PACKAGE: "backports.lzma"
+    CONAN_TOTAL_PAGES: 4
     CONAN_PASSWORD:
       secure: 5nLxRf+tMibvD7MIK0PDWQ==
     
     matrix:
         - CONAN_CURRENT_PAGE: 1
-        - CONAN_CURRENT_PAGE: 2  
-        - CONAN_CURRENT_PAGE: 3
-        - CONAN_CURRENT_PAGE: 4
+        - CONAN_CURRENT_PAGE: 2
 
 init:
   - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
