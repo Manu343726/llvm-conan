@@ -22,6 +22,7 @@ init:
 
 install:
   - set PATH=%PATH%;%PYTHON%/Scripts/
+  - pip.exe install -e https://github.com/smspillaz/conan/archive/fix-206.zip
   - pip.exe install conan_package_tools # It install conan too
   - conan user # It creates the conan data directory
 
