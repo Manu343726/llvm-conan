@@ -146,6 +146,9 @@ class LLVMConan(ConanFile):
                                   else "")))
             self.run("cmake --build . -- install")
 
+    def conan_info(self):
+        self.info.settings.build_type = "Release"
+
     def package(self):
         self.copy(pattern="*",
                   dst="include",
