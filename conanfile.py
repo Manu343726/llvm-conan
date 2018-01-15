@@ -65,7 +65,7 @@ class LLVMConan(ConanFile):
         download_extract_llvm_component("llvm", LLVMConan.version, "src")
 
     def build(self):
-        cmake = CMake(self.settings)
+        cmake = CMake(self)
         try:
             os.makedirs(INSTALL_DIR)
         except OSError:
@@ -76,75 +76,64 @@ class LLVMConan(ConanFile):
         except OSError:
             pass
 
-        with in_dir(BUILD_DIR):
-            self.run("cmake \"%s\" %s"
-                     " -DCLANG_INCLUDE_DOCS=OFF"
-                     " -DCLANG_INCLUDE_TESTS=OFF"
-                     " -DCLANG_TOOLS_INCLUDE_EXTRA_DOCS=OFF"
-                     " -DCOMPILER_RT_INCLUDE_TESTS=OFF"
-                     " -DLIBCXX_INCLUDE_TESTS=OFF"
-                     " -DLIBCXX_INCLUDE_DOCS=OFF"
-                     " -DLLVM_INCLUDE_TESTS=OFF"
-                     " -DLLVM_INCLUDE_TOOLS=ON"
-                     " -DLLVM_BUILD_TOOLS=ON"
-                     " -DLLVM_TOOL_LLVM_AR_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_AS_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_AS_FUZZER_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_BUGPOINT_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_BUGPOINT_PASSES_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_BCANALYZER_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_COV_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_CXXDUMP_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_DSYMUTIL_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_LLC_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_LLI_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_DWARFDUMP_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_DIS_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_EXTRACT_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_C_TEST_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_DIFF_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_GO_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_JITLISTENER_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_LTO_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_MCMARKUP_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_MC_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_MC_FUZZER_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_NM_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_OBJDUMP_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_BCANALYZER_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_PDBDUMP_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_PROFDATA_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_RTDYLD_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_SIZE_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_SPLIT_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_STRESS_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_SYMBOLIZER_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_LTO_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_OBJ2YAML_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_OPT_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_SANCOV_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_SANSTATS_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_VERIFY_USELISTORDER_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_XCODE_TOOLCHAIN_BUILD=OFF"
-                     " -DLLVM_TOOL_LLVM_YAML2OBJ_BUILD=OFF"
-                     " -DLLVM_INCLUDE_EXAMPLES=OFF"
-                     " -DLLVM_INCLUDE_GO_TESTS=OFF"
-                     " -DLLVM_BUILD_TESTS=OFF"
-                     " -DCMAKE_VERBOSE_MAKEFILE=1"
-                     " -DLLVM_TARGETS_TO_BUILD=X86"
-                     " -DCMAKE_INSTALL_PREFIX=\"%s\""
-                     " -DBUILD_SHARED_LIBS=%s"
-                     "" % (os.path.join(self.conanfile_directory,
-                                        "src"),
-                           cmake.command_line,
-                           os.path.join(self.conanfile_directory,
-                                        INSTALL_DIR),
-                           ("ON" if self.options.shared else "OFF")))
-            self.run("cmake --build . {cfg} -- {j}"
-                     "".format(cfg=cmake.build_config,
-                               j=("-j4" if platform.system() != "Windows"
-                                  else "")))
-            self.run("cmake --build . -- install")
+        cmake.configure(defs={
+         "CLANG_INCLUDE_DOCS": False,
+         "CLANG_INCLUDE_TESTS": False,
+         "CLANG_TOOLS_INCLUDE_EXTRA_DOCS": False,
+         "COMPILER_RT_INCLUDE_TESTS": False,
+         "LIBCXX_INCLUDE_TESTS": False,
+         "LIBCXX_INCLUDE_DOCS": False,
+         "LLVM_INCLUDE_TESTS": False,
+         "LLVM_INCLUDE_TOOLS": True,
+         "LLVM_BUILD_TOOLS": True,
+         "LLVM_TOOL_LLVM_AR_BUILD": False,
+         "LLVM_TOOL_LLVM_AS_BUILD": False,
+         "LLVM_TOOL_LLVM_AS_FUZZER_BUILD": False,
+         "LLVM_TOOL_LLVM_BUGPOINT_BUILD": False,
+         "LLVM_TOOL_LLVM_BUGPOINT_PASSES_BUILD": False,
+         "LLVM_TOOL_LLVM_BCANALYZER_BUILD": False,
+         "LLVM_TOOL_LLVM_COV_BUILD": False,
+         "LLVM_TOOL_LLVM_CXXDUMP_BUILD": False,
+         "LLVM_TOOL_LLVM_DSYMUTIL_BUILD": False,
+         "LLVM_TOOL_LLVM_LLC_BUILD": False,
+         "LLVM_TOOL_LLVM_LLI_BUILD": False,
+         "LLVM_TOOL_LLVM_DWARFDUMP_BUILD": False,
+         "LLVM_TOOL_LLVM_DIS_BUILD": False,
+         "LLVM_TOOL_LLVM_EXTRACT_BUILD": False,
+         "LLVM_TOOL_LLVM_C_TEST_BUILD": False,
+         "LLVM_TOOL_LLVM_DIFF_BUILD": False,
+         "LLVM_TOOL_LLVM_GO_BUILD": False,
+         "LLVM_TOOL_LLVM_JITLISTENER_BUILD": False,
+         "LLVM_TOOL_LLVM_MCMARKUP_BUILD": False,
+         "LLVM_TOOL_LLVM_MC_BUILD": False,
+         "LLVM_TOOL_LLVM_MC_FUZZER_BUILD": False,
+         "LLVM_TOOL_LLVM_NM_BUILD": False,
+         "LLVM_TOOL_LLVM_OBJDUMP_BUILD": False,
+         "LLVM_TOOL_LLVM_PDBDUMP_BUILD": False,
+         "LLVM_TOOL_LLVM_PROFDATA_BUILD": False,
+         "LLVM_TOOL_LLVM_RTDYLD_BUILD": False,
+         "LLVM_TOOL_LLVM_SIZE_BUILD": False,
+         "LLVM_TOOL_LLVM_SPLIT_BUILD": False,
+         "LLVM_TOOL_LLVM_STRESS_BUILD": False,
+         "LLVM_TOOL_LLVM_SYMBOLIZER_BUILD": False,
+         "LLVM_TOOL_LLVM_LTO_BUILD": False,
+         "LLVM_TOOL_LLVM_OBJ2YAML_BUILD": False,
+         "LLVM_TOOL_LLVM_OPT_BUILD": False,
+         "LLVM_TOOL_LLVM_SANCOV_BUILD": False,
+         "LLVM_TOOL_LLVM_SANSTATS_BUILD": False,
+         "LLVM_TOOL_LLVM_VERIFY_USELISTORDER_BUILD": False,
+         "LLVM_TOOL_LLVM_XCODE_TOOLCHAIN_BUILD": False,
+         "LLVM_TOOL_LLVM_YAML2OBJ_BUILD": False,
+         "LLVM_INCLUDE_EXAMPLES": False,
+         "LLVM_INCLUDE_GO_TESTS": False,
+         "LLVM_BUILD_TESTS": False,
+         "CMAKE_VERBOSE_MAKEFILE": True,
+         "LLVM_TARGETS_TO_BUILD": "X86",
+         "CMAKE_INSTALL_PREFIX": os.path.join(self.build_folder, INSTALL_DIR),
+         "BUILD_SHARED_LIBS": self.options.shared
+        }, source_folder="src")
+        cmake.build()
+        cmake.install()
 
     def conan_info(self):
         self.info.settings.build_type = "Release"
