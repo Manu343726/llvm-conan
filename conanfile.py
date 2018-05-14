@@ -55,11 +55,13 @@ class LLVMConan(ConanFile):
     options = {"shared": [True, False]}
     default_options = "shared=True"
 
-    def config(self):
-        try:  # Try catch can be removed when conan 0.8 is released
-            del self.settings.compiler.libcxx
-        except:
-            pass
+    def configure(self):
+        del self.settings.compiler.libcxx
+
+    def config_options(self):
+        if self.settings.os == "Windows":
+            del self.options.shared
+
 
     def source(self):
         download_extract_llvm_component("llvm", LLVMConan.version, "src")
@@ -130,7 +132,7 @@ class LLVMConan(ConanFile):
          "CMAKE_VERBOSE_MAKEFILE": True,
          "LLVM_TARGETS_TO_BUILD": "X86",
          "CMAKE_INSTALL_PREFIX": os.path.join(self.build_folder, INSTALL_DIR),
-         "BUILD_SHARED_LIBS": self.options.shared
+         "BUILD_SHARED_LIBS": self.options.shared if "shared" in self.options else False
         }, source_folder="src")
         cmake.build()
         cmake.install()
